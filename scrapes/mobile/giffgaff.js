@@ -1,9 +1,9 @@
-const FRIENDLYNAME = "Liveuamap";
-const ROOTURL="https://liveuamap.com";
-const DESCRIPTION = "Scrape file for Liveuamap";
+const FRIENDLYNAME = "Giffgaff";
+const ROOTURL="https://www.giffgaff.com/";
+const DESCRIPTION = "Scrape file for Giffgaff";
 const DATEOFCREATION="29/01/2023"
-const TYPE = "news";
-const GROUPID=1;
+const TYPE = "mobile";
+const GROUPID=2;
 const SCRAPERUNCONFIG = {
     isBrowser:true,
     isAxios:true,
@@ -11,12 +11,15 @@ const SCRAPERUNCONFIG = {
     proxies:["example.com"], // if you want to use proxies, add them here
 }
 
+
 exports.handler = async (event,opt)=>{
     
     return {
         title:"test",
         content:"test",
-        url:"test",
+        url:ROOTURL,
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 const fs = require("fs")
 const esprima = require("esprima");
 const { json } = require("stream/consumers");
+const AWS = require("aws-sdk");
 
 console.log("building scrappers with lambda")
 
@@ -131,6 +132,21 @@ async function buildForLambda(scrape){
         }
         console.log(`stdout: ${stdout}`);
     });
+
+    //npm run upload inside the folder
+    exec(`cd ./dist/${scrape.name} && npm run upload`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+
+
 
 }
 
