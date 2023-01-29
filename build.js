@@ -14,74 +14,93 @@ const allScrapeDetails = [];
 
 
 allScrapeFiles.forEach((sf)=>{
-    const scrapeName = sf.split(".js")[0]
-    const ScrapeDetails = {
-        name:scrapeName,
-        friendlyName:null,
-        rootUrl: null,
-        description: null,
-        creation:null,
-        type:null,
-        groupid:null,
-        runnerConfig:{}
-    }
-    const d = fs.readFileSync(`./scrapes/${sf}`, "utf8")
-    const parsed =esprima.parseModule(d);
+    const scrapeType = sf.split(".js")[0]
 
-    fs.writeFile("parsed.json",JSON.stringify(parsed,null,2),(err)=>{})
+    const cfiles = fs.readdirSync(`./scrapes/${scrapeType}`)
 
-    parsed.body.forEach((b)=>{
-        if(b.kind == "const"){
-            const varName = b.declarations[0].id.name;
-            switch(varName){
-                case "FRIENDLYNAME":
-                    ScrapeDetails.friendlyName = b.declarations[0].init.value;
-                    break;
-                case "ROOTURL":
-                    ScrapeDetails.rootUrl = b.declarations[0].init.value;
-                    break;
-                case "DESCRIPTION":
-                    ScrapeDetails.description = b.declarations[0].init.value;
-                    break;
-                case "DATEOFCREATION":
-                    ScrapeDetails.creation = b.declarations[0].init.value;
-                    break;
-                case "TYPE":
-                    ScrapeDetails.type = b.declarations[0].init.value;
-                    break;
-
-                case "GROUPID":
-                    ScrapeDetails.groupid = b.declarations[0].init.value;
-                    break;
-                case "SCRAPERUNCONFIG":
-
-                    b.declarations[0].init.properties.forEach((p)=>{
-                        console.log(p.key.name)
-                        const type = p.value.type;
-
-                        switch(type){
-                            case "Literal":
-                                ScrapeDetails.runnerConfig[p.key.name] = p.value.value;
-                                break;
-                            case "ArrayExpression":
-                                ScrapeDetails.runnerConfig[p.key.name] = p.value.elements.map((e)=>e.value);
-                                break;
-                        }
-                    })
-
-                    fs.writeFileSync("ss.json",JSON.stringify(b,null,2),(err)=>{})
-                    break;
-
-
-            }
-
+    cfiles.forEach((sf2)=>{
+        const scrapeName = sf2.split(".js")[0]
+        const ScrapeDetail = {
+            name:scrapeName,
+            file:sf2,
+            scrapeCategory:scrapeType,
+            friendlyName:null,
+            rootUrl: null,
+            description: null,
+            creation:null,
+            type:null,
+            groupid:null,
+            runnerConfig:{}
         }
+
+        const d = fs.readFileSync(`./scrapes/${scrapeType}/${sf2}`, "utf8")
+        const parsed =esprima.parseModule(d);
+
+        parsed.body.forEach((b)=>{
+            if(b.kind == "const"){
+                const varName = b.declarations[0].id.name;
+                switch(varName){
+                    case "FRIENDLYNAME":
+                        ScrapeDetail.friendlyName = b.declarations[0].init.value;
+                        break;
+                    case "ROOTURL":
+                        ScrapeDetail.rootUrl = b.declarations[0].init.value;
+                        break;
+                    case "DESCRIPTION":
+                        ScrapeDetail.description = b.declarations[0].init.value;
+                        break;
+                    case "DATEOFCREATION":
+                        ScrapeDetail.creation = b.declarations[0].init.value;
+                        break;
+                    case "TYPE":
+                        ScrapeDetail.type = b.declarations[0].init.value;
+                        break;
+                    case "GROUPID":
+                        ScrapeDetail.groupid = b.declarations[0].init.value;
+                        break;
+                    case "SCRAPERUNCONFIG":
+                        b.declarations[0].init.properties.forEach((p)=>{
+                            const type = p.value.type;
+                            switch(type){
+                                case "Literal":
+                                    ScrapeDetail.runnerConfig[p.key.name] = p.value.value;
+                                    break;
+                                case "ArrayExpression":
+                                    ScrapeDetail.runnerConfig[p.key.name] = p.value.elements.map((e)=>e.value);
+                                    break;
+                            }
+                        })
+                        break;
+                }
+            }
+        })
+
+        allScrapeDetails.push(ScrapeDetail)
     })
-
-   allScrapeDetails.push(ScrapeDetails)
-
-    // console.log(scrapeName);
 })
+
+
+async function buildForLambda(scrape){
+    if(!fs.existsSync(`./dist/${scrape.name}`)){
+        fs.mkdirSync(`./dist/${scrape.name}`)
+    }
+
+    const pjson = JSON.parse(fs.readFileSync('./templates/package.json', "utf8"));
+    pjson.name = scrape.name;
+    pjson.zip = `zip -r ${scrape.name}.zip s3://scrapes69/${scrape.name}.zip`
+    fs.writeFileSync(`./dist/${scrape.name}/package.json`,JSON.stringify(pjson,null,2),(err)=>{})
+
+    const indexjs = fs.readFileSync(`./scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
+    fs.writeFileSync(`./dist/${scrape.name}/index.js`,indexjs,(err)=>{})
+
+}
+
+
+allScrapeDetails.forEach((scrape)=>{
+    buildForLambda(scrape)
+})
+
+
 
 fs.writeFileSync("./dist/scrapes.json",JSON.stringify(allScrapeDetails,null,2),(err)=>{})
 
