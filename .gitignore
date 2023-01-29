@@ -2,3 +2,4 @@ node_modules
 dist
 gulpfile.js
 parsed.json
+ss.json
