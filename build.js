@@ -1,10 +1,16 @@
 const fs = require("fs")
 const esprima = require("esprima");
+const { json } = require("stream/consumers");
 
 console.log("building scrappers with lambda")
 
 if(!fs.existsSync("./dist")){
     fs.mkdirSync("./dist")
+}else{
+    //delete dist folder
+    fs.rmdirSync("./dist", { recursive: true })
+    fs.mkdirSync("./dist")
+    
 }
 
 const allScrapeFiles = fs.readdirSync("./scrapes")
@@ -87,11 +93,44 @@ async function buildForLambda(scrape){
 
     const pjson = JSON.parse(fs.readFileSync('./templates/package.json', "utf8"));
     pjson.name = scrape.name;
-    pjson.zip = `zip -r ${scrape.name}.zip s3://scrapes69/${scrape.name}.zip`
+    pjson.scripts.zip = `zip -r ${scrape.name}.zip ./*`
+    pjson.scripts.upload = `aws s3 cp ${scrape.name}.zip s3://scrapes69/${scrape.name}.zip`
+
+    //if package.json exists delete it
+    if(fs.existsSync(`./dist/${scrape.name}/package.json`)){
+        fs.unlinkSync(`./dist/${scrape.name}/package.json`)
+    }
     fs.writeFileSync(`./dist/${scrape.name}/package.json`,JSON.stringify(pjson,null,2),(err)=>{})
 
     const indexjs = fs.readFileSync(`./scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
     fs.writeFileSync(`./dist/${scrape.name}/index.js`,indexjs,(err)=>{})
+
+    //npm install inside the folder
+    const { exec } = require("child_process");
+    exec(`cd ./dist/${scrape.name} && npm install`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+
+    //npm run zip inside the folder
+    exec(`cd ./dist/${scrape.name} && npm run zip`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
 
 }
 
