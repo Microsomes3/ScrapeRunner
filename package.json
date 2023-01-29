@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "chrome-aws-lambda": "^10.1.0",
+    "esprima": "^4.0.1",
+    "gulp": "^4.0.2",
+    "uglify-js": "^3.17.4"
+  }
+}
