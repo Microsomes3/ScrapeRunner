@@ -123,19 +123,6 @@ allScrapeFiles.forEach((sf)=>{
                                                 break;
                                         }
                                     })
-
-                                    // p.value.elements.forEach((e)=>{
-                                    //     if (e.type == "Literal"){
-                                    //         ScrapeDetail.runnerConfig[p.key.name].push(e.value)
-                                    //     }else if(e.type == "ObjectExpression"){
-
-                                    //         const key = e.value;
-
-                                    //         console.log(key);
-                                            
-                                    //     }
-                                    // })
-
                                     break;
                             }
                         })
@@ -165,7 +152,27 @@ async function buildForLambda(scrape){
     fs.writeFileSync(`dist/${scrape.name}/package.json`,JSON.stringify(pjson,null,2),(err)=>{})
 
     const scrapeFile = fs.readFileSync(`scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
-    const buildFile = fs.readFileSync(`buildscripts/templates/buildScrape.js`, "utf8");
+    var buildFile = fs.readFileSync(`buildscripts/templates/buildScrape.js`, "utf8");
+
+    buildFile=buildFile.replace("//<const>","const url = 'https://bbc.co.uk'")
+
+    console.log("-----------");
+
+    var ccode = scrapeFile.split("exports.handler = async (event,opt)=>{")[1];
+
+    //remove the last line
+    const totalLine = ccode.split("\n").length;
+
+    console.log(totalLine)
+    return;
+    
+    //remove the last line
+    const lines = ccode.split("\n").slice(0,totalLine-1).join("\n");
+
+    ccode = lines;
+    
+    buildFile = buildFile.replace("//<code>",ccode)
+
     fs.writeFileSync(`dist/${scrape.name}/index.js`,buildFile,(err)=>{})
 
 

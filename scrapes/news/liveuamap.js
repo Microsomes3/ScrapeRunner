@@ -49,12 +49,10 @@ const SCRAPERUNCONFIG = {
     ]
 }
 
-exports.handler = async (event,opt)=>{
+exports.handler = async (event,opt)=>{//<<do not change this line
     
     return {
-        title:"test",
-        content:"test",
-        url:"test",
+        url:url
     }
 
 }

@@ -4,12 +4,10 @@
 //<import4>
 //<import5>
 
-exports.handler = async (event,opt)=>{
-    
-    return {
-        title:"test",
-        content:"test",
-        url:"test",
-    }
+//<const>
 
+exports.handler = async (event,opt)=>{//<<do not change this line
+
+    //<code>
+    
 }
