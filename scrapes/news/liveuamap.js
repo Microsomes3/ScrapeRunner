@@ -54,17 +54,22 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     const newPage = await browser.newPage();
 
-    await newPage.goto(url,{
+    const urltoUse = event.url || url;
+
+
+    await newPage.goto(urltoUse,{
         waitUntil: 'networkidle0',
     });
 
     const title = await newPage.title();
 
+
     await browser.close();
 
     return {
-        url:url,
+        url:urltoUse,
         title,
+        scrapeConfig
     }
 
 }

@@ -1,6 +1,9 @@
 const runner = require("./localscrape.js");
 
-runner.handler(null,null).then((t)=>{
+runner.handler( {
+  "url": "https://isis.liveuamap.com",
+  "cron": "0 0 0 * * *"
+},null).then((t)=>{
     process.stdout.write(JSON.stringify(t));
     //exit
     process.exit(0);

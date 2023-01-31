@@ -29,7 +29,7 @@ const totalLine = scrapeCode.split("\n").length;
 const lines = scrapeCode.split("\n").slice(0, totalLine - 1).join("\n");
 scrapeCode = lines;
 
-const localRunner = fs.readFileSync("buildscripts/templates/runner.js", "utf8");
+var localRunner = fs.readFileSync("buildscripts/templates/runner.js", "utf8");
 
 const browserLocal = fs.readFileSync("buildscripts/templates/browser_local.js", "utf8");
 
@@ -42,8 +42,15 @@ templateScrape = templateScrape.replace("//<import1>", "const puppeteer = requir
 templateScrape=templateScrape.replace("//<const>","const url ='"+scrape.rootUrl+"' ")
 templateScrape = templateScrape.replace("//<scrapeconfig>",`const scrapeConfig = ${JSON.stringify(scrape,null,2)}`)
 
+const input = scrape.runnerConfig.inputs[scrapeInput]
+
+localRunner = localRunner.replace("//<input>",`const input = ${JSON.stringify(input,null,2)}`)
+localRunner = localRunner.replace("const input =","")
+
+
 fs.writeFileSync(`tmp/localscrape.js`, templateScrape, (err) => {})
 fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
+
 
 //run the scrape
 exec(`node tmp/runner.js ${scrapeName} ${scrapeInput}`, (error, stdout, stderr) => {
