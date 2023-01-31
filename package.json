@@ -2,11 +2,11 @@
   "scripts": {
     "build": "node build.js",
     "deploy": "node deploy.js",
-    "uploadscrapedefs": "npm run build && node uploadscrapedefs.js",
-    "cron": "node cron.js",
-    "run": "node run.js",
-    "bt": "sudo node build.js && node deploy.js",
-    "new": "node generateNewScrape.js"
+    "uploadscrapedefs": "npm run buildscripts/build && node buildscripts/uploadscrapedefs.js",
+    "cron": "node buildscripts/cron.js",
+    "run": "node buildscripts/run.js",
+    "bt": "sudo node buildscripts/build.js && node buildscripts/deploy.js",
+    "new": "node buildscripts/generateNewScrape.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1304.0",

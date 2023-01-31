@@ -2,7 +2,7 @@
 
 const AWS = require("aws-sdk");
 
-const scrapes = require("./dist/scrapes.json");
+const scrapes = require("../dist/scrapes.json");
 
 
 //setup eventbridge cron jobs
