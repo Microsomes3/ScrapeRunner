@@ -108,11 +108,20 @@ function uploadFunctionS3(scrape){
         const scrape = allScrapes[i];
         const functionName = scrape.name+"_scrape_generated";
         const exists =  await checkLambdaFunctionExists(functionName);
+       
         console.log("running zip of:",scrape.name)
         await runZip(scrape);
         console.log("uploading to s3:",scrape.name)
         await uploadFunctionS3(scrape);
         console.log(functionName,exists)
+
+        if(!exists){
+            console.log("creating lambda:",scrape.name)
+            await createLambda(functionName,scrape);
+        }else{
+            console.log("updating lambda:",scrape.name)
+            await updateLambda(functionName,scrape);
+        }
     }
 })()
 

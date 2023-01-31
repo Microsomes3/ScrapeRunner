@@ -164,7 +164,6 @@ async function buildForLambda(scrape){
     const totalLine = ccode.split("\n").length;
 
     console.log(totalLine)
-    return;
     
     //remove the last line
     const lines = ccode.split("\n").slice(0,totalLine-1).join("\n");
