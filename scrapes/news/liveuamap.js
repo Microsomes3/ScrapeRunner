@@ -51,8 +51,16 @@ const SCRAPERUNCONFIG = {
 
 exports.handler = async (event,opt)=>{//<<do not change this line
     
+
+    const newPage = await browser.newPage();
+
+    await newPage.goto(url);
+
+    const title = await newPage.title();
+
     return {
-        url:url
+        url:url,
+        title,
     }
 
 }

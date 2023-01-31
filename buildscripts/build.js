@@ -157,12 +157,17 @@ async function buildForLambda(scrape){
     buildFile=buildFile.replace("//<const>","const url = 'https://bbc.co.uk'")
 
     if(scrape.runnerConfig.isBrowser){
-        buildFile = buildFile.replace("//<import1>","const chrome = require('chrome-aws-lambda');");
+        buildFile = buildFile.replace("//<import1>","const chromium = require('chrome-aws-lambda');");
     }
     
     if(scrape.runnerConfig.isAxios){
         buildFile = buildFile.replace("//<import2>","const axios = require('axios');");
     }
+
+    const browserTemplateInit = fs.readFileSync("buildscripts/templates/index_with_browser.js", "utf8");
+
+  
+    buildFile = buildFile.replace("//<browserinitcode>",browserTemplateInit)
 
 
     console.log("-----------");
