@@ -3,10 +3,6 @@ const fs = require("fs")
 const scrapeName = process.argv[2];
 const scrapeInput = process.argv[3];
 
-console.log({
-    scrapeName,
-    scrapeInput
-})
 
 const allScrapes = JSON.parse(fs.readFileSync("dist/scrapes.json"));
 
@@ -20,4 +16,26 @@ if(scrape == undefined){
 }
 
 
-console.log(scrape)
+//invoke the lambda function
+
+const aws = require("aws-sdk");
+
+const lambda = new aws.Lambda({
+    region: 'eu-west-1'
+});
+
+const params = {
+    FunctionName: scrape.name+"_scrape_generated",
+    InvocationType: 'RequestResponse',
+    Payload: JSON.stringify({
+        url: "https://google.com"
+    })
+};
+
+lambda.invoke(params, function(err, data) {
+    if(err){
+        console.log("err",err)
+    }else{
+        console.log(data.Payload)
+    }
+});
