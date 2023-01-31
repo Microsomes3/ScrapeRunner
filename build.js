@@ -115,9 +115,10 @@ allScrapeFiles.forEach((sf)=>{
                                                 break;
                                             case "ObjectExpression":
                                                 const obj = {};
-                                                const ekey =e.properties[0].key.value;
-                                                const evalue = e.properties[0].value.value;
-                                                obj[ekey] = evalue;
+                                                e.properties.forEach((p)=>{
+                                                    obj[p.key.value] = p.value.value;
+                                                })
+                                               
                                                 ScrapeDetail.runnerConfig[key].push(obj);
                                                 break;
                                         }

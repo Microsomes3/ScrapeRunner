@@ -9,34 +9,42 @@ const SCRAPERUNCONFIG = {
     isAxios:true,
     captcha:false, // if you want to use captcha, set this to true
     proxies:["example.com"], // if you want to use proxies, add them here
-    cron:"0 0 0 * * *", // if you want to use cron, add it here
     inputs:[
         {
-            "url":"https://liveuamap.com"
+            "url":"https://liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://syria.liveuamap.com"
+            "url":"https://syria.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://ukraine.liveuamap.com"
+            "url":"https://ukraine.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://russia.liveuamap.com"
+            "url":"https://russia.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://isis.liveuamap.com"
+            "url":"https://isis.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://iraq.liveuamap.com"
+            "url":"https://iraq.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://asia.liveuamap.com"
+            "url":"https://asia.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://usa.liveuamap.com"
+            "url":"https://usa.liveuamap.com",
+            "cron":"0 0 0 * * *"
         },
         {
-            "url":"https://dc.liveuamap.com"
+            "url":"https://dc.liveuamap.com",
+            "cron":"0 0 0 * * *"
         }
     ]
 }
