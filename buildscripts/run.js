@@ -3,7 +3,6 @@ const fs = require("fs")
 const scrapeName = process.argv[2];
 const scrapeInput = process.argv[3];
 
-
 const allScrapes = JSON.parse(fs.readFileSync("dist/scrapes.json"));
 
 const scrape = allScrapes.find((s)=>{
