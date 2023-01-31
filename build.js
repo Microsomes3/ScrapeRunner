@@ -9,17 +9,40 @@ if(!fs.existsSync("./dist")){
     fs.mkdirSync("./dist")
 }else{
     //delete dist folder
-    fs.rmdirSync("./dist", { recursive: true })
+    fs.rmSync("./dist", { recursive: true })
     fs.mkdirSync("./dist")
     
 }
 
+
+fs.mkdirSync("./dist/lib");
+
+const pfile = JSON.parse(fs.readFileSync("templates/package.json", "utf8"));
+
+fs.writeFileSync("./dist/lib/package.json",JSON.stringify(pfile,null,2),(err)=>{})
+
+//npm install inside the folder
+const { exec } = require("child_process");
+
+function buildLib(){
+    return new Promise((resolve,reject)=>{
+        exec(`cd ./dist/lib && npm install`, (error, stdout, stderr) => {
+            if (error) {
+                reject(error)
+            }else{
+                resolve()
+            }
+            
+        });
+        
+    });
+}
+
+(async ()=>{
+    await buildLib();
+
 const allScrapeFiles = fs.readdirSync("./scrapes")
-
-
 const allScrapeDetails = [];
-
-
 allScrapeFiles.forEach((sf)=>{
     const scrapeType = sf.split(".js")[0]
 
@@ -37,11 +60,14 @@ allScrapeFiles.forEach((sf)=>{
             creation:null,
             type:null,
             groupid:null,
-            runnerConfig:{}
+            runnerConfig:{},
+            filetxt:null,
         }
 
         const d = fs.readFileSync(`./scrapes/${scrapeType}/${sf2}`, "utf8")
         const parsed =esprima.parseModule(d);
+
+        ScrapeDetail.filetxt = d;
 
         parsed.body.forEach((b)=>{
             if(b.kind == "const"){
@@ -73,7 +99,42 @@ allScrapeFiles.forEach((sf)=>{
                                     ScrapeDetail.runnerConfig[p.key.name] = p.value.value;
                                     break;
                                 case "ArrayExpression":
-                                    ScrapeDetail.runnerConfig[p.key.name] = p.value.elements.map((e)=>e.value);
+                                    fs.writeFileSync("p.json",JSON.stringify(p,null,2),(err)=>{});
+
+                                    const key = p.key.name;
+                                    const type = p.value.type;
+
+                                    ScrapeDetail.runnerConfig[key] = [];
+
+                                    
+                                    p.value.elements.forEach(e=>{
+                                        const etype = e.type;
+                                        switch(e.type){
+                                            case "Literal":
+                                                ScrapeDetail.runnerConfig[key].push(e.value);
+                                                break;
+                                            case "ObjectExpression":
+                                                const obj = {};
+                                                const ekey =e.properties[0].key.value;
+                                                const evalue = e.properties[0].value.value;
+                                                obj[ekey] = evalue;
+                                                ScrapeDetail.runnerConfig[key].push(obj);
+                                                break;
+                                        }
+                                    })
+
+                                    // p.value.elements.forEach((e)=>{
+                                    //     if (e.type == "Literal"){
+                                    //         ScrapeDetail.runnerConfig[p.key.name].push(e.value)
+                                    //     }else if(e.type == "ObjectExpression"){
+
+                                    //         const key = e.value;
+
+                                    //         console.log(key);
+                                            
+                                    //     }
+                                    // })
+
                                     break;
                             }
                         })
@@ -106,6 +167,7 @@ async function buildForLambda(scrape){
     const indexjs = fs.readFileSync(`./scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
     fs.writeFileSync(`./dist/${scrape.name}/index.js`,indexjs,(err)=>{})
 
+
     //npm install inside the folder
     const { exec } = require("child_process");
     exec(`cd ./dist/${scrape.name} && npm install`, (error, stdout, stderr) => {
@@ -119,35 +181,6 @@ async function buildForLambda(scrape){
         }
         console.log(`stdout: ${stdout}`);
     });
-
-    //npm run zip inside the folder
-    exec(`cd ./dist/${scrape.name} && npm run zip`, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-    });
-
-    //npm run upload inside the folder
-    exec(`cd ./dist/${scrape.name} && npm run upload`, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-    });
-
-
-
 }
 
 
@@ -161,3 +194,6 @@ fs.writeFileSync("./dist/scrapes.json",JSON.stringify(allScrapeDetails,null,2),(
 
 
 //console.log(allScrapeDetails);
+
+})()
+

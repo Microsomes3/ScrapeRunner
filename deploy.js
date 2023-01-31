@@ -1,6 +1,7 @@
 //should take dist folders lambda and create lambdas in aws and set up event triggers
 const aws= require('aws-sdk');
 const fs= require("fs");
+const {exec} = require("child_process");
 
 
 async function checkLambdaFunctionExists(name){
@@ -78,27 +79,63 @@ function updateLambda(name,scrape){
 
 const allScrapes = JSON.parse(fs.readFileSync("./dist/scrapes.json").toString());
 
-allScrapes.forEach(async scrape=>{
+function runZip(scrape){
+    return new Promise((resolve,reject)=>{
+        exec(`cd dist/${scrape.name} && npm run zip`,(err,stdout,stderr)=>{
+            if(err){
+                reject(err)
+            }else{
+                resolve(stdout)
+            }
+        })
+    })
+}
 
-    const functionName = scrape.name+"_scrape_generated";
+function uploadFunctionS3(scrape){
+    return new Promise((resolve,reject)=>{
+        exec(`cd dist/${scrape.name} && npm run upload`,(err,stdout,stderr)=>{
+            if(err){
+                reject(err)
+            }else{
+                resolve(stdout)
+            }
+        })
+    }   )
+}
+
+(async()=>{
+    for(var i=0;i<allScrapes.length;i++){
+        const scrape = allScrapes[i];
+        const functionName = scrape.name+"_scrape_generated";
+        const exists =  await checkLambdaFunctionExists(functionName);
+        await runZip(scrape);
+        await uploadFunctionS3(scrape);
+        console.log(functionName,exists)
+    }
+})()
+
+
+// allScrapes.forEach(async scrape=>{
+
+//     const functionName = scrape.name+"_scrape_generated";
     
       
-   const exists =  await checkLambdaFunctionExists(functionName);
+//    const exists =  await checkLambdaFunctionExists(functionName);
 
-   if(exists){
-    //update lambda
-    console.log("lambda already exists")
+//    if(exists){
+//     //update lambda
+//     console.log("lambda already exists")
 
-    await updateLambda(functionName,scrape);
+//     await updateLambda(functionName,scrape);
 
-   }else{
-    //create lambda
-    const d =await createLambda(functionName,scrape);
-   }
+//    }else{
+//     //create lambda
+//     const d =await createLambda(functionName,scrape);
+//    }
 
 
     
 
-})
+// })
 
 
