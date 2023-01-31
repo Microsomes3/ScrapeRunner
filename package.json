@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "node build.js",
-    "deploy": "node deploy.js",
+    "build": "node buildscripts/build.js",
+    "deploy": "node buildscripts/deploy.js",
     "uploadscrapedefs": "npm run buildscripts/build && node buildscripts/uploadscrapedefs.js",
     "cron": "node buildscripts/cron.js",
     "run": "node buildscripts/run.js",

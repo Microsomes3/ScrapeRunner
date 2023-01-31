@@ -5,28 +5,28 @@ const AWS = require("aws-sdk");
 
 console.log("building scrappers with lambda")
 
-if(!fs.existsSync("./dist")){
-    fs.mkdirSync("./dist")
+
+if(!fs.existsSync("dist")){
+    fs.mkdirSync("dist")
 }else{
     //delete dist folder
-    fs.rmSync("./dist", { recursive: true })
-    fs.mkdirSync("./dist")
+    fs.rmSync("dist", { recursive: true })
+    fs.mkdirSync("dist")
     
 }
 
+fs.mkdirSync("dist/lib");
 
-fs.mkdirSync("./dist/lib");
+const pfile = JSON.parse(fs.readFileSync("buildscripts/templates/package.json", "utf8"));
 
-const pfile = JSON.parse(fs.readFileSync("templates/package.json", "utf8"));
-
-fs.writeFileSync("./dist/lib/package.json",JSON.stringify(pfile,null,2),(err)=>{})
+fs.writeFileSync("dist/lib/package.json",JSON.stringify(pfile,null,2),(err)=>{})
 
 //npm install inside the folder
 const { exec } = require("child_process");
 
 function buildLib(){
     return new Promise((resolve,reject)=>{
-        exec(`cd ./dist/lib && npm install`, (error, stdout, stderr) => {
+        exec(`cd dist/lib && npm install`, (error, stdout, stderr) => {
             if (error) {
                 reject(error)
             }else{
@@ -39,14 +39,14 @@ function buildLib(){
 }
 
 (async ()=>{
-    await buildLib();
+    await buildLib();   
+    const allScrapeFiles = fs.readdirSync("scrapes")
 
-const allScrapeFiles = fs.readdirSync("./scrapes")
-const allScrapeDetails = [];
+    const allScrapeDetails = [];
 allScrapeFiles.forEach((sf)=>{
     const scrapeType = sf.split(".js")[0]
 
-    const cfiles = fs.readdirSync(`./scrapes/${scrapeType}`)
+    const cfiles = fs.readdirSync(`scrapes/${scrapeType}`)
 
     cfiles.forEach((sf2)=>{
         const scrapeName = sf2.split(".js")[0]
@@ -64,7 +64,7 @@ allScrapeFiles.forEach((sf)=>{
             filetxt:null,
         }
 
-        const d = fs.readFileSync(`./scrapes/${scrapeType}/${sf2}`, "utf8")
+        const d = fs.readFileSync(`scrapes/${scrapeType}/${sf2}`, "utf8")
         const parsed =esprima.parseModule(d);
 
         ScrapeDetail.filetxt = d;
@@ -148,30 +148,30 @@ allScrapeFiles.forEach((sf)=>{
     })
 })
 
-
 async function buildForLambda(scrape){
-    if(!fs.existsSync(`./dist/${scrape.name}`)){
-        fs.mkdirSync(`./dist/${scrape.name}`)
+    if(!fs.existsSync(`dist/${scrape.name}`)){
+        fs.mkdirSync(`dist/${scrape.name}`)
     }
 
-    const pjson = JSON.parse(fs.readFileSync('./templates/package.json', "utf8"));
+    const pjson = JSON.parse(fs.readFileSync('buildscripts/templates/package.json', "utf8"));
     pjson.name = scrape.name;
     pjson.scripts.zip = `zip -r ${scrape.name}.zip ./*`
     pjson.scripts.upload = `aws s3 cp ${scrape.name}.zip s3://scrapes69/${scrape.name}.zip`
 
     //if package.json exists delete it
-    if(fs.existsSync(`./dist/${scrape.name}/package.json`)){
-        fs.unlinkSync(`./dist/${scrape.name}/package.json`)
+    if(fs.existsSync(`dist/${scrape.name}/package.json`)){
+        fs.unlinkSync(`dist/${scrape.name}/package.json`)
     }
-    fs.writeFileSync(`./dist/${scrape.name}/package.json`,JSON.stringify(pjson,null,2),(err)=>{})
+    fs.writeFileSync(`dist/${scrape.name}/package.json`,JSON.stringify(pjson,null,2),(err)=>{})
 
-    const indexjs = fs.readFileSync(`./scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
-    fs.writeFileSync(`./dist/${scrape.name}/index.js`,indexjs,(err)=>{})
+    const scrapeFile = fs.readFileSync(`scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
+    const buildFile = fs.readFileSync(`buildscripts/templates/buildScrape.js`, "utf8");
+    fs.writeFileSync(`dist/${scrape.name}/index.js`,buildFile,(err)=>{})
 
 
     //npm install inside the folder
     const { exec } = require("child_process");
-    exec(`cd ./dist/${scrape.name} && npm install`, (error, stdout, stderr) => {
+    exec(`cd dist/${scrape.name} && npm install`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -191,10 +191,8 @@ allScrapeDetails.forEach((scrape)=>{
 
 
 
-fs.writeFileSync("./dist/scrapes.json",JSON.stringify(allScrapeDetails,null,2),(err)=>{})
+fs.writeFileSync("dist/scrapes.json",JSON.stringify(allScrapeDetails,null,2),(err)=>{})
 
-
-//console.log(allScrapeDetails);
 
 })()
 
