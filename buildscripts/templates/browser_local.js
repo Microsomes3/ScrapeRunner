@@ -1,3 +1,5 @@
 const browser = await puppeteer.launch({
-    headless:false
+    headless:true
 });
+
+console.log("opening browser")

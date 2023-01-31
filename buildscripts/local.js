@@ -38,8 +38,8 @@ var templateScrape = fs.readFileSync("buildscripts/templates/buildScrape.js", "u
 templateScrape = templateScrape.replace("//<code>", scrapeCode)
 templateScrape = templateScrape.replace("//<browserinitcode>", browserLocal)
 
-
-
+templateScrape = templateScrape.replace("//<import1>", "const puppeteer = require('puppeteer');")
+templateScrape = templateScrape.replace("//<const>","const url = 'https://bbc.co.uk'")
 fs.writeFileSync(`tmp/localscrape.js`, templateScrape, (err) => {})
 fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
 

@@ -1,4 +1,8 @@
 const runner = require("./localscrape.js");
 
 
-console.log(runner.handler(null,null));
+(async()=>{
+    const t = await runner.handler(null,null);
+    // console.log("d",t);
+})()
+
