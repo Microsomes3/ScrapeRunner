@@ -156,6 +156,15 @@ async function buildForLambda(scrape){
 
     buildFile=buildFile.replace("//<const>","const url = 'https://bbc.co.uk'")
 
+    if(scrape.runnerConfig.isBrowser){
+        buildFile = buildFile.replace("//<import1>","const chrome = require('chrome-aws-lambda');");
+    }
+    
+    if(scrape.runnerConfig.isAxios){
+        buildFile = buildFile.replace("//<import2>","const axios = require('axios');");
+    }
+
+
     console.log("-----------");
 
     var ccode = scrapeFile.split("exports.handler = async (event,opt)=>{")[1];
