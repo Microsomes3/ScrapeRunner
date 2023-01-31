@@ -154,7 +154,11 @@ async function buildForLambda(scrape){
     const scrapeFile = fs.readFileSync(`scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
     var buildFile = fs.readFileSync(`buildscripts/templates/buildScrape.js`, "utf8");
 
-    buildFile=buildFile.replace("//<const>","const url = 'https://bbc.co.uk'")
+
+    //make all scrape config vars
+    buildFile = buildFile.replace("//<scrapeconfig>",`const scrapeConfig = ${JSON.stringify(scrape,null,2)}`)
+
+    buildFile=buildFile.replace("//<const>","const url ='"+scrape.rootUrl+"' ")
 
     if(scrape.runnerConfig.isBrowser){
         buildFile = buildFile.replace("//<import1>","const chromium = require('chrome-aws-lambda');");

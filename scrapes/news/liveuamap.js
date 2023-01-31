@@ -54,7 +54,9 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     const newPage = await browser.newPage();
 
-    await newPage.goto(url);
+    await newPage.goto(url,{
+        waitUntil: 'networkidle0',
+    });
 
     const title = await newPage.title();
 

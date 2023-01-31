@@ -6,6 +6,7 @@
 
 
 //<const>
+//<scrapeconfig>
 
 exports.handler = async (event,opt)=>{//<<do not change this line
 

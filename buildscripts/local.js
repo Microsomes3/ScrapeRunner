@@ -39,7 +39,9 @@ templateScrape = templateScrape.replace("//<code>", scrapeCode)
 templateScrape = templateScrape.replace("//<browserinitcode>", browserLocal)
 
 templateScrape = templateScrape.replace("//<import1>", "const puppeteer = require('puppeteer');")
-templateScrape = templateScrape.replace("//<const>","const url = 'https://bbc.co.uk'")
+templateScrape=templateScrape.replace("//<const>","const url ='"+scrape.rootUrl+"' ")
+templateScrape = templateScrape.replace("//<scrapeconfig>",`const scrapeConfig = ${JSON.stringify(scrape,null,2)}`)
+
 fs.writeFileSync(`tmp/localscrape.js`, templateScrape, (err) => {})
 fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
 
