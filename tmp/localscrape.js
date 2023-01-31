@@ -13,8 +13,6 @@ exports.handler = async (event,opt)=>{//<<do not change this line
     headless:true
 });
 
-console.log("opening browser")
-
 
     
     
@@ -24,6 +22,8 @@ console.log("opening browser")
     await newPage.goto(url);
 
     const title = await newPage.title();
+
+    await browser.close();
 
     return {
         url:url,

@@ -45,18 +45,9 @@ fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
 
 //run the scrape
 exec(`node tmp/runner.js ${scrapeName} ${scrapeInput}`, (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-    }
-    console.log(`stdout: ${stdout}`);
+   console.log(stdout)
 });
 
 
 
 
-console.log(templateScrape)

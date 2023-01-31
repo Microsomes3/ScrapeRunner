@@ -58,6 +58,8 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     const title = await newPage.title();
 
+    await browser.close();
+
     return {
         url:url,
         title,
