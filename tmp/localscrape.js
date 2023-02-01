@@ -77,7 +77,7 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     const newPage = await browser.newPage();
 
-    const urltoUse = event.url || url;
+    const urltoUse = "https://bbc.co.uk"
 
 
     await newPage.goto(urltoUse,{
