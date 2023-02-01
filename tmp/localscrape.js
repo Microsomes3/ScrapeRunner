@@ -62,7 +62,7 @@ const scrapeConfig = {
       }
     ]
   },
-  "filetxt": "const FRIENDLYNAME = \"Liveuamap\";\nconst ROOTURL=\"https://liveuamap.com\";\nconst DESCRIPTION = \"Scrape file for Liveuamap\";\nconst DATEOFCREATION=\"29/01/2023\"\nconst TYPE = \"news\";\nconst GROUPID=1;\nconst SCRAPERUNCONFIG = {\n    isBrowser:true,\n    isAxios:true,\n    captcha:false, // if you want to use captcha, set this to true\n    proxies:[\"example.com\"], // if you want to use proxies, add them here\n    inputs:[\n        {\n            \"url\":\"https://liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://syria.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://ukraine.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://russia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://isis.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://iraq.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://asia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://usa.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://dc.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        }\n    ]\n}\n\nexports.handler = async (event,opt)=>{//<<do not change this line\n    \n\n    const newPage = await browser.newPage();\n\n    const urltoUse = event.url || url;\n\n\n    await newPage.goto(urltoUse,{\n        waitUntil: 'networkidle0',\n    });\n\n    const title = await newPage.title();\n\n\n    await browser.close();\n\n    return {\n        url:urltoUse,\n        title,\n    }\n\n}"
+  "filetxt": "const FRIENDLYNAME = \"Liveuamap\";\nconst ROOTURL=\"https://liveuamap.com\";\nconst DESCRIPTION = \"Scrape file for Liveuamap\";\nconst DATEOFCREATION=\"29/01/2023\"\nconst TYPE = \"news\";\nconst GROUPID=1;\nconst SCRAPERUNCONFIG = {\n    isBrowser:true,\n    isAxios:true,\n    captcha:false, // if you want to use captcha, set this to true\n    proxies:[\"example.com\"], // if you want to use proxies, add them here\n    inputs:[\n        {\n            \"url\":\"https://liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://syria.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://ukraine.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://russia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://isis.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://iraq.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://asia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://usa.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://dc.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        }\n    ]\n}\n\nexports.handler = async (event,opt)=>{//<<do not change this line\n    \n\n    const newPage = await browser.newPage();\n\n    const urltoUse = event.url || url;\n\n\n    await newPage.goto(urltoUse,{\n        waitUntil: 'networkidle0',\n    });\n\n    const title = await newPage.title();\n\n\n    await browser.close();\n\n    return {\n        url:urltoUse,\n        title,\n        scrapeConfig\n    }\n\n}"
 }
 
 exports.handler = async (event,opt)=>{//<<do not change this line
@@ -77,7 +77,7 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     const newPage = await browser.newPage();
 
-    const urltoUse = "https://bbc.co.uk"
+    const urltoUse = event.url || url;
 
 
     await newPage.goto(urltoUse,{
@@ -92,6 +92,7 @@ exports.handler = async (event,opt)=>{//<<do not change this line
     return {
         url:urltoUse,
         title,
+        scrapeConfig
     }
 
     

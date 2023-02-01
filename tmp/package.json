@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "node buildscripts/build.js",
+    "deploy": "node buildscripts/deploy.js",
+    "uploadscrapedefs": "npm run buildscripts/build && node buildscripts/uploadscrapedefs.js",
+    "cron": "node buildscripts/cron.js",
+    "run": "node buildscripts/run.js",
+    "bt": "sudo node buildscripts/build.js && node buildscripts/deploy.js",
+    "new": "node buildscripts/generateNewScrape.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1304.0",
+    "chrome-aws-lambda": "^10.1.0",
+    "dotenv": "^16.0.3",
+    "esprima": "^4.0.1",
+    "gulp": "^4.0.2",
+    "puppeteer": "^19.6.2",
+    "readline": "^1.3.0",
+    "uglify-js": "^3.17.4"
+  }
+}
