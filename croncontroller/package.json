@@ -1,0 +1,14 @@
+{
+  "name": "croncontroller",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip":"zip -r croncontroller.zip index.js",
+    "deploy":"aws lambda update-function-code --function-name croncontroller --zip-file fileb://croncontroller.zip"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
