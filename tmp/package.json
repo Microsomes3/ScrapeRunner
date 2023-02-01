@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "docker": "docker build -t local-scrape . && docker run -it local-scrape"
+    "docker": "docker build -t local-scrape .",
+    "run": "docker run local-scrape"
   },
   "dependencies": {
     "aws-sdk": "^2.1304.0",

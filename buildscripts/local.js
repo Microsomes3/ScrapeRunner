@@ -52,7 +52,8 @@ localRunner = localRunner.replace("const input =","")
 var pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
 pjson.scripts = {
-    "docker": "docker build -t local-scrape . && docker run -it local-scrape",
+    "docker": "docker build -t local-scrape .",
+    "run":"docker run local-scrape"
 }
 
 
@@ -66,11 +67,21 @@ fs.writeFileSync(`tmp/localscrape.js`, templateScrape, (err) => {})
 fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
 
 
-//run the scrape
-exec(`node tmp/runner.js ${scrapeName} ${scrapeInput}`, (error, stdout, stderr) => {
-   console.log(stdout)
+// //run the scrape
+// exec(`node tmp/runner.js ${scrapeName} ${scrapeInput}`, (error, stdout, stderr) => {
+//   console.log(stdout)
+// });
+
+console.log("executing docker command");
+
+exec(`cd tmp && npm run docker`, (error, stdout, stderr) => {
+    console.log(stdout,error)
 });
 
+
+exec("cd tmp && npm run run",(error,stdout,stderr)=>{
+    console.log(stdout);
+})
 
 
 
