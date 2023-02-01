@@ -1,4 +1,4 @@
 const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chrome-browser',
+    executablePath: '/usr/bin/google-chrome',
     headless:true
 });
