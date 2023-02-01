@@ -48,6 +48,20 @@ localRunner = localRunner.replace("//<input>",`const input = ${JSON.stringify(in
 localRunner = localRunner.replace("const input =","")
 
 
+
+var pjson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+
+pjson.scripts = {
+    "docker": "docker build -t local-scrape . && docker run -it local-scrape",
+}
+
+
+const dockerTemp = fs.readFileSync("buildscripts/templates/docker_local", "utf8");
+
+fs.writeFileSync(`tmp/Dockerfile`, dockerTemp, (err) => {})
+
+fs.writeFileSync(`tmp/package.json`, JSON.stringify(pjson,null,2), (err) => {})
+
 fs.writeFileSync(`tmp/localscrape.js`, templateScrape, (err) => {})
 fs.writeFileSync(`tmp/runner.js`, localRunner, (err) => {})
 
