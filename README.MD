@@ -1,4 +1,4 @@
-#Welcome to WebScrape Runner
+# Welcome to WebScrape Runner
 
 A tool to automatically genetate AWS lambda folders for each scrape
 

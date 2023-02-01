@@ -1,10 +1,10 @@
+require("dotenv").config();
 const fs = require("fs")
 const esprima = require("esprima");
 const { json } = require("stream/consumers");
 const AWS = require("aws-sdk");
 
-console.log("building scrappers with lambda")
-
+const BucketName = process.env.AWS_BUCKET_NAME;
 
 if(!fs.existsSync("dist")){
     fs.mkdirSync("dist")
@@ -143,7 +143,7 @@ async function buildForLambda(scrape){
     const pjson = JSON.parse(fs.readFileSync('buildscripts/templates/package.json', "utf8"));
     pjson.name = scrape.name;
     pjson.scripts.zip = `zip -r ${scrape.name}.zip ./*`
-    pjson.scripts.upload = `aws s3 cp ${scrape.name}.zip s3://scrapes69/${scrape.name}.zip`
+    pjson.scripts.upload = `aws s3 cp ${scrape.name}.zip s3://${BucketName}/${scrape.name}.zip`
 
     //if package.json exists delete it
     if(fs.existsSync(`dist/${scrape.name}/package.json`)){
