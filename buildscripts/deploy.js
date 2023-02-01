@@ -1,3 +1,4 @@
+require("dotenv").config();
 //should take dist folders lambda and create lambdas in aws and set up event triggers
 const aws= require('aws-sdk');
 const fs= require("fs");
@@ -7,7 +8,7 @@ const {exec} = require("child_process");
 async function checkLambdaFunctionExists(name){
     return new Promise((resolve,reject)=>{
         const lambda = new aws.Lambda({
-            region: 'eu-west-1'
+            region: process.env.AWS_REGION
         });
         lambda.getFunction({
             FunctionName: name
@@ -24,7 +25,7 @@ async function checkLambdaFunctionExists(name){
 async function createLambda(name,scrape){
     return new Promise((resolve,reject)=>{
         const lambda = new aws.Lambda({
-            region: 'eu-west-1'
+            region: process.env.AWS_REGION
         });
 
         const params = {
@@ -55,11 +56,11 @@ async function createLambda(name,scrape){
 function updateLambda(name,scrape){
     return new Promise((resolve,reject)=>{
         const lambda = new aws.Lambda({
-            region: 'eu-west-1'
+            region: process.env.AWS_REGION
         });
 
         const params = {
-                S3Bucket: 'scrapes69',
+                S3Bucket: process.env.AWS_BUCKET_NAME,
                 S3Key: scrape.name+'.zip',
             FunctionName: name,
             Publish: true
@@ -123,30 +124,6 @@ function uploadFunctionS3(scrape){
             await updateLambda(functionName,scrape);
         }
     }
-})()
-
-
-// allScrapes.forEach(async scrape=>{
-
-//     const functionName = scrape.name+"_scrape_generated";
-    
-      
-//    const exists =  await checkLambdaFunctionExists(functionName);
-
-//    if(exists){
-//     //update lambda
-//     console.log("lambda already exists")
-
-//     await updateLambda(functionName,scrape);
-
-//    }else{
-//     //create lambda
-//     const d =await createLambda(functionName,scrape);
-//    }
-
-
-    
-
-// })
+})();
 
 
