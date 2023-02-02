@@ -39,6 +39,7 @@ templateScrape = templateScrape.replace("//<code>", scrapeCode)
 templateScrape = templateScrape.replace("//<browserinitcode>", browserLocal)
 
 templateScrape = templateScrape.replace("//<import1>", "const puppeteer = require('puppeteer');")
+templateScrape = templateScrape.replace("//<import2>", "const axios = require('axios');")
 templateScrape=templateScrape.replace("//<const>","const url ='"+scrape.rootUrl+"' ")
 templateScrape = templateScrape.replace("//<scrapeconfig>",`const scrapeConfig = ${JSON.stringify(scrape,null,2)}`)
 
