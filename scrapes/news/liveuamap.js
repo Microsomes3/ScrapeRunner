@@ -66,7 +66,8 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     await browser.close();
 
-    await axios.post("https://webhook.site/#!/ab0b55e3-3b78-427f-8a56-c84b0a7bbef1/f2cb1869-a37f-4c4b-a827-e419f400f6c3/1",{
+    await axios.post("https://9bef-77-102-234-41.eu.ngrok.io/injest",{
+        "scrapeId":3,
         url:urltoUse,
         title
     });
