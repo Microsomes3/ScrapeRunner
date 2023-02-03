@@ -98,6 +98,13 @@ async function parseScrapeDetailsFromCode(codetxt) {
                     b.declarations[0].init.properties.forEach((p)=>{
                         const type = p.value.type;
                         switch(type){
+                            case "ObjectExpression":
+                                const obj = {};
+                                p.value.properties.forEach((p)=>{
+                                    obj[p.key.value] = p.value.value;
+                                })
+                                ScrapeDetail.runnerConfig[p.key.name] = obj;
+                                break;
                             case "Literal":
                                 ScrapeDetail.runnerConfig[p.key.name] = p.value.value;
                                 break;

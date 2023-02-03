@@ -5,6 +5,11 @@ const DATEOFCREATION="29/01/2023"
 const TYPE = "news";
 const GROUPID=2;
 const SCRAPERUNCONFIG = {
+    runner:'lambda', //ecs or lambda
+    resourceControl:{
+        memory:'1500',
+        cpu:'1024'
+    },
     isBrowser:true,
     isAxios:true,
     captcha:false, // if you want to use captcha, set this to true
