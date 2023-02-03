@@ -14,10 +14,10 @@ node buildscripts/run.js <scrapename> <input id> #will invoke the lambda functio
     
     //todo  task list for future
 
-    []: # Generate Docker file for each scrape, so user can choose to run on lambda or ECS
+    [x]: # Generate Docker file for each scrape, so user can choose to run on lambda or ECS
     []: # Generate Terraform file, and Ansible to run scapes in DO,EC2 or other VPS providers witout issues, to avoid vendor lock in
     []: # Generate dynamic squid proxies before scrapes run to always run on a different IP
-    []: # Create private residential proxies using Raspberry pies, softare + hardware
+    []: # Create private residential proxies using Raspberry pies, softare + hardware 
     
 
 Mode details coming soon
