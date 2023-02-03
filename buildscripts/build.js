@@ -193,6 +193,9 @@ async function buildForLambda(scrape){
     fs.writeFileSync(`dist/${scrape.name}/index.js`,buildFile,(err)=>{})
 
 
+    const dockerTemplate = fs.readFileSync("buildscripts/templates/docker_prod", "utf8");
+    fs.writeFileSync(`dist/${scrape.name}/Dockerfile`,dockerTemplate,(err)=>{})
+
     //npm install inside the folder
     const { exec } = require("child_process");
     exec(`cd dist/${scrape.name} && npm install`, (error, stdout, stderr) => {

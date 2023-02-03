@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install curl gnupg -y \
 
 WORKDIR /APP
 
-COPY . .
+COPY package.json .
+COPY runner.js .
+COPY index.js .
 
 RUN npm install
 
