@@ -220,6 +220,7 @@ async function buildForLambda(scrape) {
     if (!fs.existsSync(`dist/${scrape.name}`)) {
         fs.mkdirSync(`dist/${scrape.name}`)
     }
+    
 
 
     const dockerUri = await createPublicRegistry(scrape.name);
@@ -235,6 +236,9 @@ async function buildForLambda(scrape) {
     if (fs.existsSync(`dist/${scrape.name}/package.json`)) {
         fs.unlinkSync(`dist/${scrape.name}/package.json`)
     }
+
+    fs.writeFileSync(`dist/${scrape.name}/scrape_details.json`, JSON.stringify(scrape, null, 2), (err) => { })
+
     fs.writeFileSync(`dist/${scrape.name}/package.json`, JSON.stringify(pjson, null, 2), (err) => { })
 
     const scrapeFile = fs.readFileSync(`scrapes/${scrape.scrapeCategory}/${scrape.file}`, "utf8");
