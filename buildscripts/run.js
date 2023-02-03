@@ -3,6 +3,11 @@ const fs = require("fs")
 const scrapeName = process.argv[2];
 const scrapeInput = process.argv[3];
 
+if(scrapeName == undefined || scrapeInput == undefined){
+    console.log("scrape name and input required")
+    return;
+}
+
 const allScrapes = JSON.parse(fs.readFileSync("dist/scrapes.json"));
 
 const scrape = allScrapes.find((s)=>{
@@ -14,8 +19,16 @@ if(scrape == undefined){
     return;
 }
 
-
+const sinput = scrape.runnerConfig.inputs[scrapeInput];
 //invoke the lambda function
+
+if (sinput == undefined) {
+    console.log("scrape input not found")
+    return;
+}
+
+console.log("invoking lambda function",scrape.name+"_scrape_generated")
+console.log("with input",sinput)
 
 const aws = require("aws-sdk");
 
@@ -26,9 +39,7 @@ const lambda = new aws.Lambda({
 const params = {
     FunctionName: scrape.name+"_scrape_generated",
     InvocationType: 'RequestResponse',
-    Payload: JSON.stringify({
-        url: "https://google.com"
-    })
+    Payload: JSON.stringify(sinput)
 };
 
 lambda.invoke(params, function(err, data) {

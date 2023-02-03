@@ -145,7 +145,7 @@ async function parseScrapeDetailsFromCode(codetxt) {
 
 async function buildScrape(name, category) {
     const ScrapeDetail = {
-        name:name,
+        name:name.split(".js")[0],
         file:name,
         scrapeCategory:category,
         friendlyName:null,
@@ -313,10 +313,15 @@ async function buildForLambda(scrape) {
     }else{
         const allScrapes = scanForScrape("all");
 
+        const allS = [];
+
         for (let i = 0; i < allScrapes.length; i++) {
             const scrapeDetail = await buildScrape(allScrapes[i].file, allScrapes[i].category);
+            allS.push(scrapeDetail);
             await buildForLambda(scrapeDetail);
         }
+
+        fs.writeFileSync(`dist/scrapes.json`, JSON.stringify(allS, null, 2), (err) => { })
 
 
     }
