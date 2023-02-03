@@ -55,6 +55,16 @@ async function createLambda(name, scrape) {
     })
 }
 
+function changeLambdaConfig(name,scrapeRunnerConfig){
+    return new Promise((resolve,reject)=>{
+        console.log("modifying lambda config")
+        console.log(name,scrapeRunnerConfig)
+        setTimeout(()=>{
+            resolve();
+        },3000)
+    })
+}
+
 function updateLambda(name, scrape) {
     return new Promise(async (resolve, reject) => {
         const lambda = new aws.Lambda({
@@ -65,26 +75,13 @@ function updateLambda(name, scrape) {
             S3Bucket: process.env.AWS_BUCKET_NAME,
             S3Key: scrape.name + '.zip',
             FunctionName: name,
-            Publish: true,
+            Publish: true
         };
 
-        await 
-
-        //update timeout and memory size
-        lambda.updateFunctionConfiguration({
-            FunctionName: name,
-            Timeout: 900,
-            MemorySize: 1500
-        }, function (err, data) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(data)
-            }
-        });
+        await changeLambdaConfig(name,scrape.runnerConfig);
 
         lambda.updateFunctionCode(params, function (err, data) {
-            console.log(data)
+            console.log(err,data)
             if (err) {
                 reject(err)
             } else {
@@ -126,20 +123,20 @@ function scanForScrape(name) {
         const allScrapes = fs.readdirSync(`scrapes/${sc}`);
         allScrapes.forEach((s) => {
 
-            if(name == "all"){
+            if (name == "all") {
                 allScrapesFound.push({
                     category: sc,
                     file: s
                 })
             }
-            
+
             else
-            if (s.split(".js")[0] == name && name !== "all") {
-                allScrapesFound.push({
-                    category: sc,
-                    file: s
-                })
-            }
+                if (s.split(".js")[0] == name && name !== "all") {
+                    allScrapesFound.push({
+                        category: sc,
+                        file: s
+                    })
+                }
         })
     })
 
@@ -152,28 +149,44 @@ function scanForScrape(name) {
 
 
 async function deployScrape(scrapeConfig) {
-return new Promise(async (resolve,reject)=>{
-    await runZip(scrapeConfig);
-})
+    return new Promise(async (resolve, reject) => {
+        if (scrapeConfig.runnerConfig.runner == "lambda") {
+            await runZip(scrapeConfig);
+            console.log("upload to s3")
+            // await uploadFunctionS3(scrapeConfig);
+            const functionName = scrapeConfig.name + "_scrape_generated";
+            console.log(functionName);
+            const exists = await checkLambdaFunctionExists(functionName);
+            if (exists) {
+                console.log("updating lambda")
+                await updateLambda(functionName, scrapeConfig);
+            }else{
+                console.log("creating lambda")
+                await createLambda(functionName, scrapeConfig);
+            }
+
+        }else{
+        }
+    });
 }
 
-(async ()=>{
-    console.log("building scrape:",selectedBuild)
+    (async () => {
+        console.log("building scrape:", selectedBuild)
 
-    if(selectedBuild !== "all"){
-        console.log("building specific scrape")
-        const scrape = scanForScrape(selectedBuild);
-        if(scrape == null){
-            console.log("scrape not found")
+        if (selectedBuild !== "all") {
+            console.log("building specific scrape")
+            const scrape = scanForScrape(selectedBuild);
+            if (scrape == null) {
+                console.log("scrape not found")
+                return;
+            }
+
+            const scrapeDetails = JSON.parse(fs.readFileSync(`dist/${scrape[0].file.split(".js")[0]}/scrape_details.json`, "utf8"));
+            await deployScrape(scrapeDetails);
+
             return;
         }
 
-        const scrapeDetails =  JSON.parse(fs.readFileSync(`dist/${scrape[0].file.split(".js")[0]}/scrape_details.json`, "utf8"));
-        await deployScrape(scrapeDetails);
-    
-        return;
-    }
 
 
-
-})();
+    })();

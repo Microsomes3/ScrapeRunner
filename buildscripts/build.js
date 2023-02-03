@@ -101,7 +101,9 @@ async function parseScrapeDetailsFromCode(codetxt) {
                             case "ObjectExpression":
                                 const obj = {};
                                 p.value.properties.forEach((p)=>{
-                                    obj[p.key.value] = p.value.value;
+                                    const k = p.key.name;
+                                    const v = p.value.value;
+                                    obj[k] = v;
                                 })
                                 ScrapeDetail.runnerConfig[p.key.name] = obj;
                                 break;
@@ -109,8 +111,6 @@ async function parseScrapeDetailsFromCode(codetxt) {
                                 ScrapeDetail.runnerConfig[p.key.name] = p.value.value;
                                 break;
                             case "ArrayExpression":
-                                fs.writeFileSync("p.json",JSON.stringify(p,null,2),(err)=>{});
-
                                 const key = p.key.name;
                                 const type = p.value.type;
 
@@ -220,8 +220,6 @@ async function buildForLambda(scrape) {
     if (!fs.existsSync(`dist/${scrape.name}`)) {
         fs.mkdirSync(`dist/${scrape.name}`)
     }
-    
-
 
     const dockerUri = await createPublicRegistry(scrape.name);
 
