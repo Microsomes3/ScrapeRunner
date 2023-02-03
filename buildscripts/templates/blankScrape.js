@@ -5,6 +5,11 @@ const DATEOFCREATION="<date>"
 const TYPE = "<category>";
 const GROUPID="<groupid>";
 const SCRAPERUNCONFIG = {
+    runner:'lambda', //ecs or lambda // max limit 900 seconds for lambda, use ecs for longer
+    resourceControl:{
+        memory:'1500',
+        cpu:'1024'
+    },
     isBrowser:true,
     isAxios:true,
     captcha:false, // if you want to use captcha, set this to true

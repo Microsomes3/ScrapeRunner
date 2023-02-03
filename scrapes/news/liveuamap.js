@@ -5,7 +5,7 @@ const DATEOFCREATION="29/01/2023"
 const TYPE = "news";
 const GROUPID=2;
 const SCRAPERUNCONFIG = {
-    runner:'lambda', //ecs or lambda
+    runner:'lambda', //ecs or lambda // max limit 900 seconds for lambda, use ecs for longer
     resourceControl:{
         memory:'1500',
         cpu:'1024'
