@@ -7,7 +7,7 @@ const GROUPID=2;
 const SCRAPERUNCONFIG = {
     runner:'lambda', //ecs or lambda // max limit 900 seconds for lambda, use ecs for longer
     resourceControl:{
-        memory:'1500',
+        memory:'1024',
         cpu:'1024', //ecs only
         timeout:60 // max limit 900 seconds for lambda, use ecs for longer
     },
