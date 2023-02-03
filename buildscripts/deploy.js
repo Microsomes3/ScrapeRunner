@@ -166,6 +166,9 @@ function scanForScrape(name) {
     return allScrapesFound;
 }
 
+function runDockerPush(scrapeConfig){
+    return new Promise((resolve,reject)=>{})
+}
 
 async function deployScrape(scrapeConfig) {
     return new Promise(async (resolve, reject) => {
@@ -185,7 +188,14 @@ async function deployScrape(scrapeConfig) {
                 await createLambda(functionName, scrapeConfig);
             }
 
+        }else if ( scrapeConfig.runnerConfig.runner == "terraform_do_docker"){
+
+        
+        }else if ( scrapeConfig.runnerConfig.runner == "ecs") {
+            console.log("deploying to ecs")
+
         }else{
+            console.log("runner not found")
         }
     });
 }
