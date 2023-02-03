@@ -3,7 +3,7 @@ const ROOTURL="https://liveuamap.com";
 const DESCRIPTION = "Scrape file for Liveuamap";
 const DATEOFCREATION="29/01/2023"
 const TYPE = "news";
-const GROUPID=1;
+const GROUPID=2;
 const SCRAPERUNCONFIG = {
     isBrowser:true,
     isAxios:true,
@@ -66,11 +66,11 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     await browser.close();
 
-    await axios.post("https://9bef-77-102-234-41.eu.ngrok.io/injest",{
-        "scrapeId":3,
-        url:urltoUse,
-        title
-    });
+    // await axios.post("https://9bef-77-102-234-41.eu.ngrok.io/injest",{
+    //     "scrapeId":3,
+    //     url:urltoUse,
+    //     title
+    // });
 
     return {
         url:urltoUse,
