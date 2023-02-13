@@ -227,6 +227,7 @@ async function buildForLambda(scrape) {
     pjson.name = scrape.name;
     pjson.scripts.zip = `zip -r ${scrape.name}.zip ./*`
     pjson.scripts.upload = `aws s3 cp ${scrape.name}.zip s3://${process.env.AWS_BUCKET_NAME}/${scrape.name}.zip`
+    pjson.scripts.deploy = `aws lambda update-function-code --function-name ${scrape.name} --s3-bucket ${process.env.AWS_BUCKET_NAME} --s3-key ${scrape.name}.zip`
     pjson.scripts.docker = `docker build -t ${scrape.name}_generated .`
     pjson.scripts.dockerpush = `docker tag bbcnews_generated:latest ${dockerUri}:latest && docker push ${dockerUri}:latest`
 

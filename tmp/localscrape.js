@@ -5,64 +5,36 @@ const axios = require('axios');
 //<import5>
 
 
-const url ='https://liveuamap.com' 
+const url ='https://www.newsnow.co.uk/h/UK' 
 const scrapeConfig = {
-  "name": "liveuamap",
-  "file": "liveuamap.js",
+  "name": "newsnow",
+  "file": "newsnow.js",
   "scrapeCategory": "news",
-  "friendlyName": "Liveuamap",
-  "rootUrl": "https://liveuamap.com",
-  "description": "Scrape file for Liveuamap",
-  "creation": "29/01/2023",
+  "friendlyName": "newsnow",
+  "rootUrl": "https://www.newsnow.co.uk/h/UK",
+  "description": "<description>",
+  "creation": "2023-02-13",
   "type": "news",
-  "groupid": 1,
+  "groupid": "2",
   "runnerConfig": {
+    "runner": "lambda",
+    "resourceControl": {
+      "memory": "1500",
+      "cpu": "1024",
+      "timeout": 900
+    },
     "isBrowser": true,
     "isAxios": true,
     "captcha": false,
-    "proxies": [
-      "example.com"
-    ],
+    "proxies": [],
     "inputs": [
       {
-        "url": "https://liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://syria.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://ukraine.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://russia.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://isis.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://iraq.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://asia.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://usa.liveuamap.com",
-        "cron": "0 0 0 * * *"
-      },
-      {
-        "url": "https://dc.liveuamap.com",
+        "url": "https://example.com",
         "cron": "0 0 0 * * *"
       }
     ]
   },
-  "filetxt": "const FRIENDLYNAME = \"Liveuamap\";\nconst ROOTURL=\"https://liveuamap.com\";\nconst DESCRIPTION = \"Scrape file for Liveuamap\";\nconst DATEOFCREATION=\"29/01/2023\"\nconst TYPE = \"news\";\nconst GROUPID=1;\nconst SCRAPERUNCONFIG = {\n    isBrowser:true,\n    isAxios:true,\n    captcha:false, // if you want to use captcha, set this to true\n    proxies:[\"example.com\"], // if you want to use proxies, add them here\n    inputs:[\n        {\n            \"url\":\"https://liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://syria.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://ukraine.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://russia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://isis.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://iraq.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://asia.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://usa.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        },\n        {\n            \"url\":\"https://dc.liveuamap.com\",\n            \"cron\":\"0 0 0 * * *\"\n        }\n    ]\n}\n\nexports.handler = async (event,opt)=>{//<<do not change this line\n    \n\n    const newPage = await browser.newPage();\n\n    const urltoUse = event.url || url;\n\n\n    await newPage.goto(urltoUse,{\n        waitUntil: 'networkidle0',\n    });\n\n    const title = await newPage.title();\n\n\n    await browser.close();\n\n    return {\n        url:urltoUse,\n        title,\n        scrapeConfig\n    }\n\n}"
+  "filetxt": "const FRIENDLYNAME = \"newsnow\";\nconst ROOTURL=\"https://www.newsnow.co.uk/h/UK\";\nconst DESCRIPTION = \"<description>\";\nconst DATEOFCREATION=\"2023-02-13\"\nconst TYPE = \"news\";\nconst GROUPID=\"2\";\nconst SCRAPERUNCONFIG = {\n    runner:'lambda', //ecs or lambda // max limit 900 seconds for lambda, use ecs for longer\n    resourceControl:{\n        memory:'1500',\n        cpu:'1024', //ecs only\n        timeout:900 // max limit 900 seconds for lambda, use ecs for longer\n    },\n    isBrowser:true,\n    isAxios:true,\n    captcha:false, // if you want to use captcha, set this to true\n    proxies:[], // if you want to use proxies, add them here\n    inputs:[\n        {\n            \"url\":\"https://example.com\",\n            \"cron\":\"0 0 0 * * *\"\n        }\n    ]\n}\n\nexports.handler = async (event,opt)=>{\n    \n    return {\n        title:\"test\",\n        content:\"test\",\n        url:\"test\",\n    }\n\n}"
 }
 
 exports.handler = async (event,opt)=>{//<<do not change this line
@@ -91,10 +63,11 @@ exports.handler = async (event,opt)=>{//<<do not change this line
 
     await browser.close();
 
-    await axios.post("https://webhook.site/#!/ab0b55e3-3b78-427f-8a56-c84b0a7bbef1/f2cb1869-a37f-4c4b-a827-e419f400f6c3/1",{
-        url:urltoUse,
-        title
-    });
+    // await axios.post("https://9bef-77-102-234-41.eu.ngrok.io/injest",{
+    //     "scrapeId":3,
+    //     url:urltoUse,
+    //     title
+    // });
 
     return {
         url:urltoUse,
