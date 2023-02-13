@@ -1,4 +1,4 @@
-name: PairOfSum
+name: AutoDeploy
 on:
   push:
     branches:
